@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  quoteotter-agents:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:SecurePass123@postgres:5432/quoteotter_agents
+      - JWT_SECRET=ChangeThisJWTSecret123
+      - VALID_API_KEYS=api-key-001,api-key-002
+      - ENABLE_PHONEREVEALR=false
+      - LOG_LEVEL=info
+      - CORS_ORIGINS=*
+      - ENABLE_FRAUD_DETECTION=true
+      - ENABLE_ANALYTICS=true
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=SecurePass123
+      - POSTGRES_DB=quoteotter_agents
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass RedisPass123
+    volumes:
+      - redis-data:/data
+
+volumes:
+  postgres-data:
+  redis-data:
