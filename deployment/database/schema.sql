@@ -31,14 +31,14 @@ CREATE TABLE IF NOT EXISTS leads (
   phone_validation JSONB,
   
   created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW(),
-  
-  INDEX idx_leads_status (status),
-  INDEX idx_leads_service_category (service_category),
-  INDEX idx_leads_zip_code (zip_code),
-  INDEX idx_leads_score (score),
-  INDEX idx_leads_created_at (created_at)
+  updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE INDEX idx_leads_status ON leads(status);
+CREATE INDEX idx_leads_service_category ON leads(service_category);
+CREATE INDEX idx_leads_zip_code ON leads(zip_code);
+CREATE INDEX idx_leads_score ON leads(score);
+CREATE INDEX idx_leads_created_at ON leads(created_at);
 
 -- Providers table
 CREATE TABLE IF NOT EXISTS providers (
@@ -62,12 +62,12 @@ CREATE TABLE IF NOT EXISTS providers (
   response_time_avg INTEGER DEFAULT 0,
   
   created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW(),
-  
-  INDEX idx_providers_status (status),
-  INDEX idx_providers_service_categories USING GIN (service_categories),
-  INDEX idx_providers_service_zip_codes USING GIN (service_zip_codes)
+  updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE INDEX idx_providers_status ON providers(status);
+CREATE INDEX idx_providers_service_categories ON providers USING GIN (service_categories);
+CREATE INDEX idx_providers_service_zip_codes ON providers USING GIN (service_zip_codes);
 
 -- Lead assignments table (many-to-many relationship)
 CREATE TABLE IF NOT EXISTS lead_assignments (
@@ -86,13 +86,13 @@ CREATE TABLE IF NOT EXISTS lead_assignments (
   notes TEXT,
   
   created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW(),
-  
-  INDEX idx_lead_assignments_lead_id (lead_id),
-  INDEX idx_lead_assignments_provider_id (provider_id),
-  INDEX idx_lead_assignments_status (status),
-  INDEX idx_lead_assignments_assigned_at (assigned_at)
+  updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE INDEX idx_lead_assignments_lead_id ON lead_assignments(lead_id);
+CREATE INDEX idx_lead_assignments_provider_id ON lead_assignments(provider_id);
+CREATE INDEX idx_lead_assignments_status ON lead_assignments(status);
+CREATE INDEX idx_lead_assignments_assigned_at ON lead_assignments(assigned_at);
 
 -- Phone validation cache table
 CREATE TABLE IF NOT EXISTS phone_validation_cache (
@@ -108,11 +108,11 @@ CREATE TABLE IF NOT EXISTS phone_validation_cache (
   validation_result JSONB,
   
   created_at TIMESTAMP DEFAULT NOW(),
-  expires_at TIMESTAMP,
-  
-  INDEX idx_phone_cache_phone (phone),
-  INDEX idx_phone_cache_expires_at (expires_at)
+  expires_at TIMESTAMP
 );
+
+CREATE INDEX idx_phone_cache_phone ON phone_validation_cache(phone);
+CREATE INDEX idx_phone_cache_expires_at ON phone_validation_cache(expires_at);
 
 -- API keys table
 CREATE TABLE IF NOT EXISTS api_keys (
@@ -129,11 +129,11 @@ CREATE TABLE IF NOT EXISTS api_keys (
   last_used_at TIMESTAMP,
   
   created_at TIMESTAMP DEFAULT NOW(),
-  expires_at TIMESTAMP,
-  
-  INDEX idx_api_keys_api_key (api_key),
-  INDEX idx_api_keys_provider_id (provider_id)
+  expires_at TIMESTAMP
 );
+
+CREATE INDEX idx_api_keys_api_key ON api_keys(api_key);
+CREATE INDEX idx_api_keys_provider_id ON api_keys(provider_id);
 
 -- Activity logs table
 CREATE TABLE IF NOT EXISTS activity_logs (
@@ -148,11 +148,11 @@ CREATE TABLE IF NOT EXISTS activity_logs (
   
   metadata JSONB,
   
-  created_at TIMESTAMP DEFAULT NOW(),
-  
-  INDEX idx_activity_logs_entity (entity_type, entity_id),
-  INDEX idx_activity_logs_created_at (created_at)
+  created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE INDEX idx_activity_logs_entity ON activity_logs(entity_type, entity_id);
+CREATE INDEX idx_activity_logs_created_at ON activity_logs(created_at);
 
 -- Reset daily lead counters (to be run daily via cron)
 CREATE OR REPLACE FUNCTION reset_daily_lead_counters()
