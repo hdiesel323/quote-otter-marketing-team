@@ -1,0 +1,326 @@
+{
+  "team_name": "Enterprise Campaign Management Team",
+  "version": "1.0.0",
+  "description": "Integrated multi-agent system for end-to-end campaign planning, execution, and optimization",
+  
+  "team_composition": {
+    "core_agents": [
+      {
+        "agent": "Strategic Agent",
+        "role": "Strategic Lead",
+        "authority": "primary_decision_maker",
+        "required": true
+      },
+      {
+        "agent": "Analytics Agent",
+        "role": "Data Intelligence",
+        "authority": "advisor",
+        "required": true
+      },
+      {
+        "agent": "Compliance Agent",
+        "role": "Quality Gate",
+        "authority": "blocking",
+        "required": true
+      },
+      {
+        "agent": "Operations Agent",
+        "role": "Execution Coordinator",
+        "authority": "executor",
+        "required": true
+      },
+      {
+        "agent": "Creative Intelligence Agent",
+        "role": "Creative Advisor",
+        "authority": "advisor",
+        "required": false
+      }
+    ],
+    "supporting_agents": [
+      {
+        "agent": "Benchmark Agent",
+        "role": "Competitive Context",
+        "on_demand": true
+      },
+      {
+        "agent": "Audience Agent",
+        "role": "Targeting Specialist",
+        "on_demand": true
+      },
+      {
+        "agent": "Reporting Agent",
+        "role": "Communications",
+        "on_demand": true
+      }
+    ]
+  },
+  
+  "workflow": {
+    "campaign_planning": {
+      "sequence": [
+        {
+          "step": 1,
+          "agent": "Strategic Agent",
+          "action": "Intake client brief and objectives",
+          "deliverable": "Strategic Intake Document"
+        },
+        {
+          "step": 2,
+          "agents": ["Analytics Agent", "Benchmark Agent", "Audience Agent"],
+          "action": "Gather intelligence (parallel)",
+          "deliverable": "Intelligence Brief"
+        },
+        {
+          "step": 3,
+          "agent": "Strategic Agent",
+          "action": "Develop strategy",
+          "deliverable": "Campaign Strategy"
+        },
+        {
+          "step": 4,
+          "agent": "Compliance Agent",
+          "action": "Validate strategy",
+          "deliverable": "Compliance Approval",
+          "blocking": true
+        },
+        {
+          "step": 5,
+          "agent": "Strategic Agent",
+          "action": "Finalize executive brief",
+          "deliverable": "Executive Strategy Brief"
+        },
+        {
+          "step": 6,
+          "agent": "Operations Agent",
+          "action": "Create implementation plan",
+          "deliverable": "Campaign Setup Plan"
+        }
+      ],
+      "estimated_duration": "3-5 business days"
+    },
+    
+    "campaign_execution": {
+      "sequence": [
+        {
+          "step": 1,
+          "agent": "Operations Agent",
+          "action": "Set up campaigns",
+          "deliverable": "Campaign configurations"
+        },
+        {
+          "step": 2,
+          "agent": "Compliance Agent",
+          "action": "Pre-flight QA audit",
+          "deliverable": "Launch Approval",
+          "blocking": true
+        },
+        {
+          "step": 3,
+          "agent": "Operations Agent",
+          "action": "Launch campaigns",
+          "deliverable": "Live campaigns"
+        },
+        {
+          "step": 4,
+          "agent": "Analytics Agent",
+          "action": "Monitor initial performance",
+          "deliverable": "24-hour report"
+        }
+      ],
+      "estimated_duration": "1-2 business days"
+    },
+    
+    "ongoing_optimization": {
+      "daily": [
+        {
+          "agent": "Compliance Agent",
+          "action": "Daily QA check",
+          "alert_conditions": ["overspend", "tracking_issues", "policy_violations"]
+        },
+        {
+          "agent": "Analytics Agent",
+          "action": "Performance monitoring",
+          "alert_conditions": ["anomalies", "pacing_issues", "underperformance"]
+        }
+      ],
+      "weekly": [
+        {
+          "agent": "Analytics Agent",
+          "action": "Performance analysis",
+          "deliverable": "Weekly insights report"
+        },
+        {
+          "agent": "Strategic Agent",
+          "action": "Review and recommend optimizations",
+          "deliverable": "Optimization recommendations"
+        },
+        {
+          "agent": "Reporting Agent",
+          "action": "Stakeholder update",
+          "deliverable": "Weekly summary"
+        }
+      ],
+      "monthly": [
+        {
+          "agent": "Analytics Agent",
+          "action": "Comprehensive analysis",
+          "deliverable": "Monthly performance report"
+        },
+        {
+          "agent": "Strategic Agent",
+          "action": "Strategic review",
+          "deliverable": "Strategic recommendations"
+        },
+        {
+          "agent": "Compliance Agent",
+          "action": "Compliance audit",
+          "deliverable": "Compliance health report"
+        }
+      ]
+    }
+  },
+  
+  "collaboration_rules": {
+    "decision_hierarchy": [
+      "1. Compliance Agent has veto power on any decision (brand/legal safety)",
+      "2. Strategic Agent makes strategic decisions",
+      "3. Analytics Agent provides data for informed decisions",
+      "4. Operations Agent executes approved decisions",
+      "5. All agents can escalate to human oversight"
+    ],
+    
+    "communication_protocols": {
+      "urgent_alerts": {
+        "channels": ["All agents", "Human oversight"],
+        "response_time": "15 minutes",
+        "triggers": ["budget_overrun", "compliance_violation", "platform_outage"]
+      },
+      "standard_updates": {
+        "channels": ["Relevant agents"],
+        "response_time": "4 hours",
+        "frequency": "As needed"
+      },
+      "scheduled_syncs": {
+        "frequency": "Weekly",
+        "participants": ["All core agents"],
+        "format": "Performance review + planning"
+      }
+    },
+    
+    "escalation_matrix": {
+      "tier_1_immediate": {
+        "conditions": [
+          "Legal violation",
+          "Budget overrun >20%",
+          "Platform suspension risk",
+          "Brand crisis"
+        ],
+        "escalate_to": "Human leadership",
+        "action": "Pause campaigns, notify immediately"
+      },
+      "tier_2_urgent": {
+        "conditions": [
+          "Performance decline >30%",
+          "Compliance issues requiring human judgment",
+          "Cross-agent conflicts",
+          "Client escalation"
+        ],
+        "escalate_to": "Account lead",
+        "action": "Flag for review within 24 hours"
+      },
+      "tier_3_standard": {
+        "conditions": [
+          "Strategic pivots",
+          "Budget reallocation requests",
+          "Timeline changes",
+          "Scope expansion"
+        ],
+        "escalate_to": "Strategic lead",
+        "action": "Include in next sync"
+      }
+    }
+  },
+  
+  "performance_metrics": {
+    "team_kpis": [
+      {
+        "metric": "Strategy-to-launch time",
+        "target": "<5 business days",
+        "measurement": "From brief to live"
+      },
+      {
+        "metric": "Compliance pass rate",
+        "target": ">95% first review",
+        "measurement": "Approvals without revision"
+      },
+      {
+        "metric": "Optimization response time",
+        "target": "<24 hours",
+        "measurement": "From insight to action"
+      },
+      {
+        "metric": "Prediction accuracy",
+        "target": "±15% of forecast",
+        "measurement": "Analytics predictions vs actuals"
+      },
+      {
+        "metric": "Incident prevention",
+        "target": "Zero critical incidents",
+        "measurement": "Violations prevented by Compliance Agent"
+      }
+    ]
+  },
+  
+  "handoff_protocols": {
+    "strategic_to_creative": {
+      "deliverable": "Creative Brief",
+      "format": "Structured document",
+      "includes": ["Strategy", "Audience", "Key messages", "Brand guidelines", "Success metrics"]
+    },
+    "analytics_to_strategic": {
+      "deliverable": "Performance Intelligence",
+      "format": "Data summary + insights",
+      "includes": ["Metrics", "Trends", "Opportunities", "Recommendations"]
+    },
+    "compliance_approval": {
+      "deliverable": "Approval Decision",
+      "format": "Structured review",
+      "options": ["APPROVED", "REVISIONS_REQUIRED", "REJECTED", "ESCALATE"]
+    },
+    "operations_handoff": {
+      "deliverable": "Campaign Specifications",
+      "format": "Technical setup doc",
+      "includes": ["Budgets", "Targeting", "Creative assets", "Tracking", "Schedule"]
+    }
+  },
+  
+  "learning_system": {
+    "shared_memory": {
+      "client_preferences": "Stored and accessible to all agents",
+      "campaign_learnings": "Post-campaign insights shared across team",
+      "process_improvements": "Iterative optimization of workflows",
+      "error_prevention": "Failed validations inform future checks"
+    },
+    "performance_tracking": {
+      "agent_effectiveness": "Track contribution to outcomes",
+      "collaboration_quality": "Measure handoff efficiency",
+      "prediction_accuracy": "Validate forecasts against actuals",
+      "client_satisfaction": "Feedback loop integration"
+    }
+  },
+  
+  "metadata": {
+    "created_date": "2025-11-06",
+    "use_cases": [
+      "Full-service campaign management",
+      "Multi-channel integrated campaigns",
+      "Always-on optimization programs",
+      "New client launches",
+      "Major brand initiatives"
+    ],
+    "capacity": {
+      "concurrent_campaigns": "Up to 10 active campaigns per team instance",
+      "client_load": "1-3 clients per team configuration"
+    }
+  }
+}

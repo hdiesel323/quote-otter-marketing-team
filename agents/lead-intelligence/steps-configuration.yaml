@@ -1,0 +1,475 @@
+# Strategic Campaign Agent - Steps Configuration
+# Defines the structured process flow for strategy development
+
+version: "1.0"
+agent: "WPP Strategic Campaign Agent"
+
+steps:
+  - id: "step_1_intake"
+    name: "Strategic Intake & Objective Alignment"
+    type: "instruction"
+    description: "Gather campaign requirements and align on business objectives"
+    
+    instructions: |
+      1. Collect all campaign inputs:
+         - Business objectives and success criteria
+         - Target audience specifications
+         - Budget parameters and constraints
+         - Timeline requirements
+         - Brand guidelines and constraints
+         - Competitive landscape overview
+      
+      2. Validate objective clarity:
+         - Are goals SMART (Specific, Measurable, Achievable, Relevant, Time-bound)?
+         - Are there conflicting priorities that need resolution?
+         - Is the scope appropriately defined?
+      
+      3. Document intake in standardized format:
+         - Primary objective (revenue, awareness, engagement, conversion)
+         - Secondary objectives (max 2)
+         - Non-negotiable constraints
+         - Success metrics with targets
+      
+      4. Request clarification on any ambiguous requirements
+    
+    outputs:
+      - "Strategic Intake Document"
+      - "Clarification requests (if needed)"
+    
+    completion_criteria:
+      - All required inputs collected
+      - Objectives validated and documented
+      - Stakeholder alignment confirmed
+
+  - id: "step_2_data_synthesis"
+    name: "Multi-Source Data Synthesis"
+    type: "agents"
+    description: "Gather insights from Analytics, Benchmark, and Audience agents"
+    
+    instructions: |
+      Call the following agents in parallel to gather intelligence:
+      
+      **Analytics Agent Request:**
+      - Historical performance data for similar campaigns
+      - Current channel performance baselines
+      - Attribution insights and conversion patterns
+      - Budget efficiency metrics
+      
+      **Benchmark Agent Request:**
+      - Industry performance benchmarks for this vertical
+      - Competitive campaign analysis
+      - Market trend indicators
+      - Historical success patterns
+      
+      **Audience Agent Request:**
+      - Target audience segmentation and sizing
+      - Behavioral insights and media consumption
+      - High-value audience identification
+      - Addressability and reach estimates
+      
+      Synthesize all inputs into unified intelligence brief with:
+      - Key opportunities identified
+      - Potential challenges flagged
+      - Data-backed assumptions documented
+      - Knowledge gaps noted for strategic decisions
+    
+    agent_calls:
+      - agent: "Analytics Agent"
+        request_type: "performance_intel"
+      - agent: "Benchmark Agent"
+        request_type: "competitive_analysis"
+      - agent: "Audience Agent"
+        request_type: "targeting_insights"
+    
+    outputs:
+      - "Unified Intelligence Brief"
+      - "Opportunity & Risk Matrix"
+    
+    completion_criteria:
+      - All agent inputs received and validated
+      - Synthesis complete with clear insights
+      - Data quality assessed and documented
+
+  - id: "step_3_strategic_diagnosis"
+    name: "Strategic Diagnosis & Hypothesis Formation"
+    type: "self-reflect"
+    description: "Analyze intelligence and form strategic hypotheses"
+    
+    instructions: |
+      Conduct strategic diagnosis by answering:
+      
+      **Market Position:**
+      - Where does the brand/product stand in the competitive landscape?
+      - What is the unique value proposition vs. competitors?
+      - What perceptual gaps exist that we can exploit?
+      
+      **Growth Levers:**
+      - Which channels/tactics offer highest ROI potential?
+      - Where is there proven performance we can scale?
+      - What untapped opportunities exist based on the data?
+      
+      **Strategic Barriers:**
+      - What obstacles could prevent success?
+      - Where is waste occurring in current approach?
+      - What dependencies or risks need mitigation?
+      
+      **Strategic Hypotheses (form 3-5):**
+      - Clear "if-then" statements
+      - Backed by data from synthesis phase
+      - Testable and measurable
+      - Example: "If we shift 30% of budget from display to video, 
+        then we expect 25% improvement in conversion rate based on 
+        Q3 performance patterns"
+      
+      Self-reflection questions:
+      - Are my hypotheses truly data-driven or based on assumptions?
+      - Have I considered alternative strategic approaches?
+      - Am I being appropriately ambitious yet realistic?
+      - What evidence would prove me wrong?
+    
+    outputs:
+      - "Strategic Diagnosis Report"
+      - "3-5 Testable Hypotheses"
+      - "Alternative Scenarios Considered"
+    
+    completion_criteria:
+      - Thorough diagnosis completed
+      - Hypotheses are testable and measurable
+      - Self-critique conducted and documented
+
+  - id: "step_4_strategy_formulation"
+    name: "Integrated Strategy Development"
+    type: "instruction"
+    description: "Build comprehensive campaign strategy"
+    
+    instructions: |
+      Develop complete strategy framework including:
+      
+      **1. Strategic Positioning**
+      - Core message and value proposition
+      - Differentiation from competitors
+      - Emotional and rational appeals
+      - Brand voice and tone guidance
+      
+      **2. Channel Strategy**
+      - Recommended channel mix with rationale
+      - Budget allocation by channel (with ranges)
+      - Channel-specific objectives and KPIs
+      - Integration and synergy plan
+      
+      **3. Audience Strategy**
+      - Priority audience segments (ranked)
+      - Targeting approach per segment
+      - Message customization framework
+      - Frequency and reach targets
+      
+      **4. Creative Strategy**
+      - Strategic creative brief outline
+      - Testing framework (what to test, how, when)
+      - Asset requirements and specifications
+      - Production timeline considerations
+      
+      **5. Measurement Framework**
+      - Primary KPIs with targets
+      - Secondary metrics for optimization
+      - Attribution model recommendation
+      - Reporting cadence and format
+      
+      **6. Phased Rollout Plan**
+      - Phase 1: Launch (weeks 1-2)
+      - Phase 2: Optimization (weeks 3-6)
+      - Phase 3: Scale (weeks 7+)
+      - Decision gates between phases
+      
+      **7. Budget Model**
+      - Total budget breakdown
+      - Fixed vs. flexible allocations
+      - Contingency reserves (10-15%)
+      - ROI projections with scenarios
+      
+      **8. Risk Management**
+      - Identified risks (likelihood x impact)
+      - Mitigation strategies
+      - Contingency plans
+      - Escalation triggers
+    
+    outputs:
+      - "Comprehensive Strategy Document"
+      - "Channel Mix Recommendation"
+      - "Budget Allocation Model"
+      - "Risk Register"
+    
+    completion_criteria:
+      - All 8 strategic components completed
+      - Internal consistency validated
+      - Budget math verified
+
+  - id: "step_5_compliance_validation"
+    name: "Compliance & Risk Validation"
+    type: "seek_feedback"
+    description: "Validate strategy with Compliance Agent for brand safety and regulatory compliance"
+    
+    instructions: |
+      Submit strategy to Compliance Agent for review:
+      
+      **Validation Request:**
+      - Brand guideline adherence check
+      - Regulatory compliance review (advertising standards, data privacy, industry-specific regulations)
+      - Reputation risk assessment
+      - Ethical considerations evaluation
+      - Legal review triggers identification
+      
+      **Required Approvals:**
+      - Brand safety: APPROVED / NEEDS REVISION / ESCALATE
+      - Regulatory: COMPLIANT / NEEDS REVISION / LEGAL REVIEW
+      - Risk level: LOW / MEDIUM / HIGH
+      
+      **Iteration Protocol:**
+      - If NEEDS REVISION: Incorporate feedback and resubmit
+      - If ESCALATE or LEGAL REVIEW: Pause for human review
+      - If APPROVED: Proceed to next step
+      
+      Document all compliance feedback and revisions made
+    
+    agent_calls:
+      - agent: "Compliance Agent"
+        request_type: "strategy_validation"
+    
+    outputs:
+      - "Compliance Validation Report"
+      - "Revision Log (if applicable)"
+    
+    completion_criteria:
+      - Compliance validation completed
+      - All critical issues resolved
+      - Approval status documented
+
+  - id: "step_6_peer_review"
+    name: "Strategic Peer Review & Quality Assurance"
+    type: "seek_feedback"
+    description: "Optional peer review for high-stakes campaigns"
+    
+    instructions: |
+      For campaigns meeting these criteria, request peer review:
+      - Budget > $500K
+      - New client or high-visibility brand
+      - Innovative/untested strategic approach
+      - Complex multi-market campaigns
+      
+      **Peer Review Questions:**
+      1. Is the strategic logic sound and well-supported?
+      2. Are there blind spots or unconsidered alternatives?
+      3. Is the budget allocation optimal?
+      4. Are the success metrics appropriate?
+      5. Is the risk assessment comprehensive?
+      6. Are timelines realistic?
+      
+      Reviewers can be:
+      - Senior WPP strategists (human)
+      - Specialized agent consultants
+      - Cross-functional leads
+      
+      Incorporate feedback and document rationale for any feedback not incorporated
+    
+    outputs:
+      - "Peer Review Feedback"
+      - "Response to Feedback"
+    
+    completion_criteria:
+      - Peer review completed (if required)
+      - Feedback addressed or documented
+      - Final strategic decisions affirmed
+
+  - id: "step_7_executive_brief"
+    name: "Executive Strategy Brief Creation"
+    type: "artifact"
+    description: "Generate polished, client-ready strategy brief"
+    
+    instructions: |
+      Create executive strategy brief artifact with these sections:
+      
+      **Cover:**
+      - Campaign name
+      - Client/brand
+      - Date
+      - Strategic Agent + Human strategist (if applicable)
+      
+      **Executive Summary** (1 page)
+      - Strategic recommendation in 3-4 sentences
+      - Expected business outcomes
+      - Investment required
+      - Key success factors
+      
+      **Business Context** (1-2 pages)
+      - Objectives and success criteria
+      - Market situation and competitive landscape
+      - Target audience overview
+      - Strategic challenge statement
+      
+      **Strategic Approach** (2-3 pages)
+      - Core strategic insight
+      - Recommended positioning and messaging
+      - Channel strategy and rationale
+      - Audience targeting approach
+      - Creative direction
+      - Measurement framework
+      
+      **Investment & Returns** (1 page)
+      - Budget breakdown by channel
+      - Expected ROI scenarios (conservative, expected, optimistic)
+      - Efficiency benchmarks
+      
+      **Roadmap** (1 page)
+      - Phased timeline with milestones
+      - Key decision points
+      - Quick wins and long-term plays
+      
+      **Appendix**
+      - Supporting data and research
+      - Risk register
+      - Team and roles
+      - Next steps
+      
+      **Format Requirements:**
+      - Professional formatting
+      - Data visualizations where helpful
+      - Clear section headers
+      - Executive-friendly language (no jargon)
+      - Actionable recommendations highlighted
+    
+    outputs:
+      - "Executive Strategy Brief (PDF/Document)"
+      - "Presentation Deck (optional)"
+    
+    completion_criteria:
+      - Brief is complete and polished
+      - All sections included
+      - Visual aids included where helpful
+      - Proofread and quality-checked
+
+  - id: "step_8_handoff_coordination"
+    name: "Agent Handoff & Implementation Coordination"
+    type: "agents"
+    description: "Coordinate strategy handoff to execution agents"
+    
+    instructions: |
+      Distribute strategic outputs to execution agents:
+      
+      **Creative Agent Handoff:**
+      - Strategic creative brief
+      - Message hierarchy and themes
+      - Testing framework
+      - Brand guidelines and constraints
+      - Request: Creative concepts aligned with strategy
+      
+      **Operations Agent Handoff:**
+      - Campaign timeline and milestones
+      - Resource requirements
+      - Approval workflows
+      - Risk alerts and contingencies
+      - Request: Campaign setup and coordination
+      
+      **Reporting Agent Handoff:**
+      - Success metrics and targets
+      - Reporting cadence
+      - Stakeholder distribution list
+      - Strategic narrative for reporting
+      - Request: Automated reporting setup
+      
+      **Audience Agent Handoff:**
+      - Audience segments and priorities
+      - Targeting specifications
+      - Frequency caps and pacing
+      - Request: Audience setup and monitoring
+      
+      Establish regular check-in schedule with all agents
+      Define escalation paths for issues
+    
+    agent_calls:
+      - agent: "Creative Agent"
+        handoff_type: "creative_brief"
+      - agent: "Operations Agent"
+        handoff_type: "implementation_plan"
+      - agent: "Reporting Agent"
+        handoff_type: "measurement_setup"
+      - agent: "Audience Agent"
+        handoff_type: "targeting_specs"
+    
+    outputs:
+      - "Handoff Confirmation Log"
+      - "Agent Assignment Matrix"
+      - "Communication Schedule"
+    
+    completion_criteria:
+      - All agents briefed successfully
+      - Handoff documents delivered
+      - Acknowledgment received from all agents
+      - Coordination schedule established
+
+  - id: "step_9_final_reflection"
+    name: "Strategic Learning Capture"
+    type: "self-reflect"
+    description: "Document learnings and strategic decisions for future improvement"
+    
+    instructions: |
+      Reflect on the strategy development process:
+      
+      **Process Reflection:**
+      - What data was most valuable in shaping strategy?
+      - Where did I have to make assumptions vs. data-driven decisions?
+      - What alternative strategies did I consider but reject (and why)?
+      - What uncertainties remain that we'll need to monitor?
+      
+      **Predictions for Learning:**
+      - What specific outcomes do I predict?
+      - What would indicate strategy is working/not working?
+      - What early signals should we monitor?
+      - When should we consider course correction?
+      
+      **Improvement Opportunities:**
+      - What additional data would have been helpful?
+      - What agent collaborations worked well/poorly?
+      - What process improvements would help future strategies?
+      
+      **Knowledge Capture:**
+      - Strategic insights to remember
+      - Client-specific learnings
+      - Industry/vertical patterns observed
+      - Innovative approaches to test
+      
+      Store learnings in agent memory for continuous improvement
+      Tag strategy for post-campaign performance comparison
+    
+    outputs:
+      - "Strategic Learning Brief"
+      - "Performance Predictions"
+      - "Process Improvement Notes"
+    
+    completion_criteria:
+      - Reflection completed
+      - Learnings documented
+      - Predictions recorded for validation
+      - Memory system updated
+
+# Step Flow Control
+flow_type: "sequential"  # Steps must complete in order
+allow_revisit: true  # Agent can return to earlier steps if needed
+auto_progress: false  # Agent decides when each step is complete
+
+# Quality Gates
+quality_checks:
+  - step: "step_4_strategy_formulation"
+    requirement: "All 8 strategy components must be complete"
+  - step: "step_5_compliance_validation"
+    requirement: "Must receive APPROVED status from Compliance Agent"
+  - step: "step_7_executive_brief"
+    requirement: "Brief must pass internal quality review"
+
+# Escalation Triggers
+escalation_rules:
+  - condition: "Compliance Agent returns ESCALATE or LEGAL REVIEW"
+    action: "Pause workflow, notify human strategist"
+  - condition: "Budget exceeds $1M"
+    action: "Require human strategist approval before step 7"
+  - condition: "Timeline < 2 weeks for strategy completion"
+    action: "Alert Operations Agent of expedited timeline"
