@@ -61,15 +61,8 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 
-# Copy built application
+# Copy built application (includes all source and node_modules)
 COPY --from=builder --chown=agentuser:nodejs /app ./
-
-# Copy agent configurations
-COPY --chown=agentuser:nodejs agents ./agents
-COPY --chown=agentuser:nodejs teams ./teams
-COPY --chown=agentuser:nodejs workflows ./workflows
-COPY --chown=agentuser:nodejs guardrails ./guardrails
-COPY --chown=agentuser:nodejs integrations ./integrations
 
 # Create directories for runtime data
 RUN mkdir -p /app/data /app/logs && \
