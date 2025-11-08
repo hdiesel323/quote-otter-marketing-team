@@ -42,11 +42,7 @@ COPY . .
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build application (if Next.js or TypeScript)
-RUN \
-  if [ -f "package.json" ] && grep -q '"build"' package.json; then \
-    npm run build; \
-  fi
+# No build step needed - this is a Node.js Express app that runs directly
 
 # Stage 4: Runner - Production image
 FROM base AS runner
