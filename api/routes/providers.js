@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.Router();
 const { asyncHandler } = require('../middleware/errorHandler');
 const { validate, validateParams } = require('../middleware/validation');
 const { apiKeyAuth } = require('../middleware/auth');
@@ -7,9 +6,12 @@ const {
   providerSchema,
   providerUpdateSchema,
   idParamSchema,
+  providerQuerySchema,
 } = require('../models/schemas');
 
 module.exports = (providerService) => {
+  const router = express.Router();
+  
   router.post(
     '/',
     apiKeyAuth,
@@ -26,6 +28,7 @@ module.exports = (providerService) => {
   router.get(
     '/',
     apiKeyAuth,
+    validate(providerQuerySchema, 'query'),
     asyncHandler(async (req, res) => {
       const { page, limit, status, serviceCategory, zipCode } = req.query;
       const result = await providerService.getProviders({

@@ -31,8 +31,10 @@ const healthRoutes = require('./api/routes/health');
 let phoneRevealrClient = null;
 if (process.env.ENABLE_PHONEREVEALR === 'true' && process.env.PHONEREVEALR_API_KEY) {
   try {
-    const PhoneRevealr = require('./integrations/phonerevealr');
-    phoneRevealrClient = new PhoneRevealr(process.env.PHONEREVEALR_API_KEY);
+    const PhoneRevealrClient = require('./integrations/phonerevealr');
+    phoneRevealrClient = new PhoneRevealrClient({
+      apiKey: process.env.PHONEREVEALR_API_KEY
+    });
     logger.info('PhoneRevealr client initialized');
   } catch (error) {
     logger.warn('PhoneRevealr client not available:', error.message);

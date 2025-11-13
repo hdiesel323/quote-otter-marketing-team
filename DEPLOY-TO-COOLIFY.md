@@ -11,18 +11,103 @@ Go to your Coolify dashboard:
 
 ### Create New Application
 
-1. Click **"New Resource"** → **"Application"**
-2. Select **"Docker Compose"** as the deployment type
-3. Application Settings:
-   - **Name**: `quoteotter-agents`
-   - **Git Repository**: `https://github.com/hdiesel323/quote-otter-marketing-team`
+1. Click **"New Resource"** → **"Service"**
+2. Select **"Docker Compose"** option
+3. **IMPORTANT: YAML Formatting Issues**
+   
+   When pasting the Docker Compose file, Coolify may have issues with:
+   - Smart quotes (curly quotes) - Use only straight quotes: `"3.8"` not `"3.8"`
+   - Indentation problems - YAML requires exact spacing
+   
+   **Common Errors and Fixes:**
+   
+   **Error: "Unable to parse at line 1 (near version: '3.8')"**
+   - Fix: Remove smart quotes. Line 1 should be: `version: "3.8"` with straight quotes
+   
+   **Error: "Unable to parse at line 3 (near services:)"**
+   - Fix: Remove ALL spaces before `services:` - it should start at column 0 (flush left)
+   - `services:` should align with `version:` above it (no indent)
+   
+   **Correct Structure:**
+   ```yaml
+   version: "3.8"
+   
+   services:
+     quoteotter-agents:
+       build:
+   ```
+   Note: `version` and `services` have NO leading spaces
+
+4. **Paste Docker Compose Content:**
+   
+   Copy this EXACTLY (watch for indentation):
+
+```yaml
+version: "3.8"
+
+services:
+  quoteotter-agents:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:SecurePass123@postgres:5432/quoteotter_agents
+      - JWT_SECRET=ChangeThisJWTSecret123
+      - VALID_API_KEYS=api-key-001,api-key-002
+      - ENABLE_PHONEREVEALR=false
+      - LOG_LEVEL=info
+      - CORS_ORIGINS=*
+      - ENABLE_FRAUD_DETECTION=true
+      - ENABLE_ANALYTICS=true
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=SecurePass123
+      - POSTGRES_DB=quoteotter_agents
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass RedisPass123
+    volumes:
+      - redis-data:/data
+
+volumes:
+  postgres-data:
+  redis-data:
+```
+
+5. **Troubleshooting Tips:**
+   - If pasting doesn't work, try typing line 1 manually: `version: "3.8"`
+   - Make sure line 3 `services:` has NO spaces before it
+   - Use 2 spaces for each indentation level (not tabs)
+   - If error persists, clear the field completely and re-paste
+
+6. Click **"Save"** when YAML parses successfully (no error message)
+
+7. **Configure Git Repository** (Next Screen):
+   - **Public Repository**: `https://github.com/hdiesel323/quote-otter-marketing-team`
    - **Branch**: `main`
-   - **Docker Compose Location**: `deployment/docker/docker-compose.yml`
    - **Build Pack**: Docker Compose
+   - Leave other settings as default
 
-### Set Environment Variables
+### Set Environment Variables (Optional - Already in Docker Compose)
 
-In Coolify's Environment Variables section, add these:
+The environment variables are already embedded in the docker-compose.yml above. 
+If you need to override them, you can add these in Coolify's Environment Variables section:
 
 ```env
 # Application
@@ -144,6 +229,16 @@ curl -X POST http://w44okccwwsokwscks88kgswo.46.224.16.19.sslip.io:3000/api/prov
 ```
 
 ## Troubleshooting
+
+### YAML Parsing Errors in Coolify
+
+**Problem:** Error messages when pasting docker-compose.yml
+**Solution:**
+1. Clear the text field completely
+2. Type line 1 manually: `version: "3.8"` (use keyboard quotes, not copy-paste)
+3. Ensure `services:` on line 3 has NO leading spaces
+4. Use 2 spaces (not tabs) for indentation
+5. Don't copy from formatted documents (PDF, Word) - they add smart quotes
 
 ### Logs
 View application logs in Coolify dashboard or:

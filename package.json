@@ -9,7 +9,7 @@
     "build": "tsc",
     "test": "jest",
     "lint": "eslint .",
-    "migrate": "node scripts/migrate.js"
+    "migrate": "node deployment/database/migrate.js"
   },
   "keywords": [
     "lead-generation",

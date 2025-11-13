@@ -292,47 +292,76 @@ class LeadService {
     const { page = 1, limit = 20, status, serviceCategory, minScore, maxScore, startDate, endDate, sortBy = 'createdAt', sortOrder = 'desc' } = filters;
     const offset = (page - 1) * limit;
 
+    // Whitelist of allowed sort columns (map camelCase to snake_case)
+    const sortColumnMap = {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+      score: 'score',
+      status: 'status',
+      serviceCategory: 'service_category',
+      firstName: 'first_name',
+      lastName: 'last_name',
+      zipCode: 'zip_code',
+    };
+
+    const dbSortColumn = sortColumnMap[sortBy] || 'created_at';
+    const dbSortOrder = sortOrder.toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+
     let query = 'SELECT * FROM leads WHERE 1=1';
+    let countQuery = 'SELECT COUNT(*) FROM leads WHERE 1=1';
     const values = [];
+    const countValues = [];
     let paramCount = 1;
+    let countParamCount = 1;
 
     if (status) {
       query += ` AND status = $${paramCount++}`;
+      countQuery += ` AND status = $${countParamCount++}`;
       values.push(status);
+      countValues.push(status);
     }
 
     if (serviceCategory) {
       query += ` AND service_category = $${paramCount++}`;
+      countQuery += ` AND service_category = $${countParamCount++}`;
       values.push(serviceCategory);
+      countValues.push(serviceCategory);
     }
 
     if (minScore !== undefined) {
       query += ` AND score >= $${paramCount++}`;
+      countQuery += ` AND score >= $${countParamCount++}`;
       values.push(minScore);
+      countValues.push(minScore);
     }
 
     if (maxScore !== undefined) {
       query += ` AND score <= $${paramCount++}`;
+      countQuery += ` AND score <= $${countParamCount++}`;
       values.push(maxScore);
+      countValues.push(maxScore);
     }
 
     if (startDate) {
       query += ` AND created_at >= $${paramCount++}`;
+      countQuery += ` AND created_at >= $${countParamCount++}`;
       values.push(startDate);
+      countValues.push(startDate);
     }
 
     if (endDate) {
       query += ` AND created_at <= $${paramCount++}`;
+      countQuery += ` AND created_at <= $${countParamCount++}`;
       values.push(endDate);
+      countValues.push(endDate);
     }
 
-    query += ` ORDER BY ${sortBy} ${sortOrder.toUpperCase()} LIMIT $${paramCount++} OFFSET $${paramCount++}`;
+    query += ` ORDER BY ${dbSortColumn} ${dbSortOrder} LIMIT $${paramCount++} OFFSET $${paramCount++}`;
     values.push(limit, offset);
 
     try {
       const result = await this.db.query(query, values);
-      const countQuery = 'SELECT COUNT(*) FROM leads WHERE 1=1';
-      const countResult = await this.db.query(countQuery);
+      const countResult = await this.db.query(countQuery, countValues);
       
       return {
         leads: result.rows,

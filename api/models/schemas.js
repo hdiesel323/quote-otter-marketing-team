@@ -78,6 +78,19 @@ const idParamSchema = Joi.object({
   id: Joi.string().uuid().required(),
 });
 
+const leadStatusUpdateSchema = Joi.object({
+  status: Joi.string().valid('pending', 'approved', 'rejected', 'flagged', 'distributed').required(),
+  flagReason: Joi.string().max(500).optional(),
+});
+
+const providerQuerySchema = Joi.object({
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(100).default(20),
+  status: Joi.string().valid('active', 'paused', 'suspended').optional(),
+  serviceCategory: Joi.string().optional(),
+  zipCode: Joi.string().pattern(/^\d{5}$/).optional(),
+});
+
 module.exports = {
   leadSchema,
   phoneValidationSchema,
@@ -86,4 +99,6 @@ module.exports = {
   analyticsQuerySchema,
   leadQuerySchema,
   idParamSchema,
+  leadStatusUpdateSchema,
+  providerQuerySchema,
 };

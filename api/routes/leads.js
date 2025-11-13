@@ -7,7 +7,7 @@ const express = require('express');
 const { asyncHandler } = require('../middleware/errorHandler');
 const { validate, validateQuery, validateParams } = require('../middleware/validation');
 const { apiKeyAuth } = require('../middleware/auth');
-const { leadSchema, leadQuerySchema, idParamSchema } = require('../models/schemas');
+const { leadSchema, leadQuerySchema, idParamSchema, leadStatusUpdateSchema } = require('../models/schemas');
 
 module.exports = (leadService) => {
   const router = express.Router();
@@ -71,6 +71,7 @@ module.exports = (leadService) => {
     '/:id/status',
     apiKeyAuth,
     validateParams(idParamSchema),
+    validate(leadStatusUpdateSchema),
     asyncHandler(async (req, res) => {
       const { status, flagReason } = req.body;
       const lead = await leadService.updateLeadStatus(req.params.id, status, flagReason);

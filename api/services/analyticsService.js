@@ -30,25 +30,58 @@ class AnalyticsService {
 
     let query = `
       SELECT 
-        TO_CHAR(created_at, '${dateFormat}') as period,
+        TO_CHAR(l.created_at, '${dateFormat}') as period,
         COUNT(*) as total_leads,
-        COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved_leads,
-        COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected_leads,
-        COUNT(CASE WHEN status = 'flagged' THEN 1 END) as flagged_leads,
-        AVG(score) as avg_score,
-        COUNT(CASE WHEN intent = 'hot' THEN 1 END) as hot_leads,
-        COUNT(CASE WHEN intent = 'warm' THEN 1 END) as warm_leads,
-        COUNT(CASE WHEN intent = 'cool' THEN 1 END) as cool_leads
-      FROM leads
-      WHERE created_at >= $1 AND created_at <= $2
+        COUNT(CASE WHEN l.status = 'approved' THEN 1 END) as approved_leads,
+        COUNT(CASE WHEN l.status = 'rejected' THEN 1 END) as rejected_leads,
+        COUNT(CASE WHEN l.status = 'flagged' THEN 1 END) as flagged_leads,
+        AVG(l.score) as avg_score,
+        COUNT(CASE WHEN l.intent = 'hot' THEN 1 END) as hot_leads,
+        COUNT(CASE WHEN l.intent = 'warm' THEN 1 END) as warm_leads,
+        COUNT(CASE WHEN l.intent = 'cool' THEN 1 END) as cool_leads
+      FROM leads l
     `;
 
-    const values = [startDate, endDate];
-    let paramCount = 3;
+    const values = [];
+    let paramCount = 1;
+    const conditions = [];
+
+    if (startDate) {
+      conditions.push(`l.created_at >= $${paramCount++}`);
+      values.push(startDate);
+    }
+
+    if (endDate) {
+      conditions.push(`l.created_at <= $${paramCount++}`);
+      values.push(endDate);
+    }
 
     if (serviceCategory) {
-      query += ` AND service_category = $${paramCount++}`;
+      conditions.push(`l.service_category = $${paramCount++}`);
       values.push(serviceCategory);
+    }
+
+    if (providerId) {
+      query = `
+        SELECT 
+          TO_CHAR(l.created_at, '${dateFormat}') as period,
+          COUNT(*) as total_leads,
+          COUNT(CASE WHEN l.status = 'approved' THEN 1 END) as approved_leads,
+          COUNT(CASE WHEN l.status = 'rejected' THEN 1 END) as rejected_leads,
+          COUNT(CASE WHEN l.status = 'flagged' THEN 1 END) as flagged_leads,
+          AVG(l.score) as avg_score,
+          COUNT(CASE WHEN l.intent = 'hot' THEN 1 END) as hot_leads,
+          COUNT(CASE WHEN l.intent = 'warm' THEN 1 END) as warm_leads,
+          COUNT(CASE WHEN l.intent = 'cool' THEN 1 END) as cool_leads
+        FROM leads l
+        INNER JOIN lead_assignments la ON l.id = la.lead_id
+      `;
+      conditions.push(`la.provider_id = $${paramCount++}`);
+      values.push(providerId);
+    }
+
+    if (conditions.length > 0) {
+      query += ` WHERE ${conditions.join(' AND ')}`;
     }
 
     query += ` GROUP BY period ORDER BY period ASC`;
@@ -152,8 +185,9 @@ class AnalyticsService {
         AVG(la.response_time_seconds) as avg_response_time_seconds,
         SUM(CASE WHEN la.status = 'converted' THEN p.lead_price ELSE 0 END) as total_revenue
       FROM providers p
-      LEFT JOIN lead_assignments la ON p.id = la.provider_id
-      WHERE la.assigned_at >= $1 AND la.assigned_at <= $2
+      LEFT JOIN lead_assignments la ON p.id = la.provider_id 
+        AND la.assigned_at >= $1 
+        AND la.assigned_at <= $2
       GROUP BY p.id, p.business_name
       ORDER BY leads_converted DESC
     `;

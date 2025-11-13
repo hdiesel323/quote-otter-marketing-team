@@ -80,22 +80,31 @@ class ProviderService {
     const offset = (page - 1) * limit;
 
     let query = 'SELECT * FROM providers WHERE 1=1';
+    let countQuery = 'SELECT COUNT(*) FROM providers WHERE 1=1';
     const values = [];
+    const countValues = [];
     let paramCount = 1;
+    let countParamCount = 1;
 
     if (status) {
       query += ` AND status = $${paramCount++}`;
+      countQuery += ` AND status = $${countParamCount++}`;
       values.push(status);
+      countValues.push(status);
     }
 
     if (serviceCategory) {
       query += ` AND $${paramCount++} = ANY(service_categories)`;
+      countQuery += ` AND $${countParamCount++} = ANY(service_categories)`;
       values.push(serviceCategory);
+      countValues.push(serviceCategory);
     }
 
     if (zipCode) {
       query += ` AND $${paramCount++} = ANY(service_zip_codes)`;
+      countQuery += ` AND $${countParamCount++} = ANY(service_zip_codes)`;
       values.push(zipCode);
+      countValues.push(zipCode);
     }
 
     query += ` ORDER BY conversion_rate DESC LIMIT $${paramCount++} OFFSET $${paramCount++}`;
@@ -103,8 +112,7 @@ class ProviderService {
 
     try {
       const result = await this.db.query(query, values);
-      const countQuery = 'SELECT COUNT(*) FROM providers WHERE 1=1';
-      const countResult = await this.db.query(countQuery);
+      const countResult = await this.db.query(countQuery, countValues);
 
       return {
         providers: result.rows,

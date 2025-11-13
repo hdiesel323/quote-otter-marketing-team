@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  quoteotter-agents:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-SecurePass123}@postgres:5432/quoteotter_agents
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-RedisPass123}@redis:6379
+      - JWT_SECRET=${JWT_SECRET:-ChangeThisJWTSecret123}
+      - VALID_API_KEYS=${VALID_API_KEYS:-api-key-001,api-key-002}
+      - ENABLE_PHONEREVEALR=false
+      - LOG_LEVEL=info
+      - CORS_ORIGINS=*
+      - ENABLE_FRAUD_DETECTION=true
+      - ENABLE_ANALYTICS=true
+      - ENABLE_LEAD_SCORING=true
+      - ENABLE_PROVIDER_MATCHING=true
+      - API_RATE_LIMIT=100
+    depends_on:
+      - postgres
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-SecurePass123}
+      - POSTGRES_DB=quoteotter_agents
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-RedisPass123}
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+  redis-data:

@@ -1,11 +1,12 @@
 const express = require('express');
-const router = express.Router();
 const { asyncHandler } = require('../middleware/errorHandler');
 const { validateQuery } = require('../middleware/validation');
 const { apiKeyAuth } = require('../middleware/auth');
 const { analyticsQuerySchema } = require('../models/schemas');
 
 module.exports = (analyticsService) => {
+  const router = express.Router();
+  
   router.get(
     '/leads',
     apiKeyAuth,
