@@ -49,3 +49,6 @@ quote-otter-agent-system/
 
 ## Status
 🚀 Active Development - Transforming from campaign management to lead generation
+
+## Deployment
+Last deployed: 2025-11-13 - Coolify webhook integration active
