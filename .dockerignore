@@ -1,0 +1,51 @@
+# Git
+.git/
+.gitignore
+
+# IDE and editors
+.cursor/
+.claude/
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Documentation (not needed in production)
+documentation/
+*.md
+!README.md
+
+# Test files
+tests/
+*.test.js
+*.spec.js
+
+# Build artifacts
+dist/
+build/
+
+# Temporary files
+tmp/
+temp/
